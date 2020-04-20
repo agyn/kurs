@@ -1,0 +1,3 @@
+dotnet ef database update  --project Kurs.Shared.Data --startup-project Kurs.Identity.Api --configuration Development
+
+start addMigration.bat [Name]
