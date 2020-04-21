@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -9,11 +10,11 @@ using Microsoft.IdentityModel.Tokens;
 namespace Kurs.Shared.Api
 {
     public static class StartupExtensions
-    { 
-         public static IServiceCollection AddRscAuth(this IServiceCollection services, IConfiguration configuration)
+    {
+        public static IServiceCollection AddRscAuth(this IServiceCollection services, IConfiguration configuration, X509Certificate2 cert)
         {
-//            services.AddIdentity<User, RefRole>()
-//                .AddDefaultTokenProviders();
+            //            services.AddIdentity<User, RefRole>()
+            //                .AddDefaultTokenProviders();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services
                 .AddAuthentication(options =>
@@ -28,8 +29,11 @@ namespace Kurs.Shared.Api
                     cfg.SaveToken = true;
                     cfg.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidIssuer = "IdentityConfig:Issuer",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Key!!!1110_][poiuytrewq9513578426")),
+                        // ValidIssuer = "IdentityConfig:Issuer",
+                        // IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Key!!!1110_][poiuytrewq9513578426")),
+                        // ValidateAudience = false,
+                        ValidIssuer = configuration["IdentityConfig:Issuer"],
+                        IssuerSigningKey = new X509SecurityKey(cert),
                         ValidateAudience = false,
                     };
                 });
@@ -39,6 +43,7 @@ namespace Kurs.Shared.Api
 
         public static IApplicationBuilder UseRscAuth(this IApplicationBuilder app)
         {
+
             app.UseAuthentication();
 
             return app;

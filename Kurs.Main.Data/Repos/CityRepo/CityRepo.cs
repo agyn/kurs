@@ -17,6 +17,15 @@ namespace Kurs.Main.Data.Repos.CityRepo
 
         }
 
+        public async Task<object> GetCities()
+        {
+            return await Repo.Select(x => new
+            {
+                x.Id,
+                x.Name
+            }).ToListAsync();
+        }
+
         public async Task<object> GetList(CitySearchDto dto)
         {
             var query = GetQueryable(x => x.Name.Contains(dto.Name) || string.IsNullOrEmpty(dto.Name))

@@ -13,17 +13,19 @@ namespace Kurs.Identity.Logic
     public class IdentityLogic : IIdentityLogic
     {
         private readonly IConfiguration _config;
+        private readonly X509Certificate2 _cert;
 
-        public IdentityLogic(IConfiguration config)
+        public IdentityLogic(IConfiguration config, X509Certificate2 cert)
         {
             _config = config;
+            _cert = cert;
         }
 
         public string GenerateAccessToken(int userId)
         {
             var secondsStr = _config["IdentityConfig:AccessExpirationSeconds"];
             if (!int.TryParse(secondsStr, out var seconds))
-                seconds = (int) TimeSpan.FromMinutes(30).TotalSeconds;
+                seconds = (int)TimeSpan.FromMinutes(30).TotalSeconds;
             return GenerateToken(userId, seconds);
         }
 
@@ -31,18 +33,18 @@ namespace Kurs.Identity.Logic
         {
             var secondsStr = _config["IdentityConfig:RefreshExpirationSeconds"];
             if (!int.TryParse(secondsStr, out var seconds))
-                seconds = (int) TimeSpan.FromDays(30).TotalSeconds;
+                seconds = (int)TimeSpan.FromDays(30).TotalSeconds;
             return GenerateToken(userId, seconds);
         }
 
         private string GenerateToken(int userId, int seconds)
         {
             var issuer = _config["IdentityConfig:Issuer"];
-            var claims = new List<Claim>() {new Claim(JwtRegisteredClaimNames.Sub, userId.ToString())};
-            //var creds = new SigningCredentials(new X509SecurityKey(_cert), SecurityAlgorithms.RsaSha256);
-            var creds = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["IdentityConfig:SigningKey"])),
-							SecurityAlgorithms.HmacSha256);
-                            
+            var claims = new List<Claim>() { new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()) };
+            var creds = new SigningCredentials(new X509SecurityKey(_cert), SecurityAlgorithms.RsaSha256);
+            // var creds = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["IdentityConfig:SigningKey"])),
+            // 				SecurityAlgorithms.HmacSha256);
+
             var expires = DateTime.Now.AddSeconds(seconds);
 
             var token = new JwtSecurityToken(

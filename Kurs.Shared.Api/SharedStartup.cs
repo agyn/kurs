@@ -64,14 +64,20 @@ namespace Kurs.Shared.Api
                 options.AddPolicy(IasAllowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:5000")
+                        builder.WithOrigins("http://localhost:4200")
                             .AllowCredentials().AllowAnyHeader().AllowAnyMethod();
                     });
             });
 
             services.AddMvc();
             services.AddSwaggerDocument();
-            services.AddRscAuth(Configuration);
+            
+            var certPath = Configuration["IdentityConfig:CertPath"];
+            var certPass = Configuration["IdentityConfig:CertPass"];
+            var cert = new X509Certificate2(certPath, certPass);
+
+            services.AddRscAuth(Configuration, cert);
+            containerBuilder.RegisterInstance(cert);
 
             if (containerBuilder == null)
                 containerBuilder = new ContainerBuilder();
@@ -86,17 +92,18 @@ namespace Kurs.Shared.Api
         {
             app.UseCors(IasAllowSpecificOrigins);
             app.UseSwagger();
-                       app.UseSwaggerUi3(config => config.TransformToExternalPath = (internalUiRoute, request) =>
-            {
-                if (internalUiRoute.StartsWith("/") == true && internalUiRoute.StartsWith(request.PathBase) == false)
-                {
-                    return request.PathBase + internalUiRoute;
-                }
-                else
-                {
-                    return internalUiRoute;
-                }
-            });
+            app.UseSwaggerUi3(config => config.TransformToExternalPath = (internalUiRoute, request) =>
+ {
+     if (internalUiRoute.StartsWith("/") == true && internalUiRoute.StartsWith(request.PathBase) == false)
+     {
+         return request.PathBase + internalUiRoute;
+     }
+     else
+     {
+         return internalUiRoute;
+     }
+ });
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }

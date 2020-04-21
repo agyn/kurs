@@ -26,6 +26,11 @@ namespace Kurs.Shared.Api.Controllers
                     .Claims
                     .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?
                     .Value;
+                
+                if (claimValue == null)
+                {
+                    return _userId;
+                }
                 _userId = int.Parse(claimValue);
 
                 return _userId;
@@ -40,14 +45,14 @@ namespace Kurs.Shared.Api.Controllers
 
             if (ex is ArgumentException)
             {
-//#if DEBUG
+                //#if DEBUG
                 return BadRequest(ex.Message);
-//#else
-//            return BadRequest(msg);
-//#endif
+                //#else
+                //            return BadRequest(msg);
+                //#endif
             }
 
-            Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 #if DEBUG
             return Json(ex);
 #else
@@ -63,14 +68,14 @@ namespace Kurs.Shared.Api.Controllers
 
             if (ex is ArgumentException)
             {
-//#if DEBUG
+                //#if DEBUG
                 return BadRequest(ex);
-//#else
-//            return BadRequest(msg);
-//#endif
+                //#else
+                //            return BadRequest(msg);
+                //#endif
             }
 
-            Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 #if DEBUG
             return Json(ex);
 #else

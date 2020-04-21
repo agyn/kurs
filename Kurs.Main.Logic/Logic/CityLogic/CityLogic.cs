@@ -13,6 +13,11 @@ namespace Pet.Admin.Logic.CityLogic
         {
         }
 
+        public async Task<object> GetCities()
+        {
+            return await Repo.GetCities();
+        }
+
         public async Task<object> GetList(CitySearchDto dto)
         {
             return await Repo.GetList(dto);

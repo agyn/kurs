@@ -10,5 +10,6 @@ namespace Kurs.Admin.Logic.CityLogic
     public interface ICityLogic<TEntity> : IBaseCrudLogic<TEntity>
     {
         Task<object> GetList(CitySearchDto dto);
+        Task<object> GetCities();
     }
 }

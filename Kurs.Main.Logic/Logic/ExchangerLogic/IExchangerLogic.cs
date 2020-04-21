@@ -7,5 +7,6 @@ namespace Kurs.Main.Logic.ExchangerLogic
     public interface IExchangerLogic<TEntity> : IBaseCrudLogic<TEntity>
     {
         Task<object> GetList(ExchangerSearchDto dto);
+        Task<object> GetExchangers(int currentUserId);
     }
 }

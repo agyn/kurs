@@ -1,4 +1,5 @@
 using Kurs.Shared.Data.Context;
+using Kurs.Shared.Data.Dtos;
 using Kurs.Shared.Data.Repos;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace Kurs.Main.Data.Repos.KursRepo
 {
     public interface IKursRepo<TEntity> : IBaseRepo<TEntity> where TEntity : BaseEntity
     {
-        Task<object> GetList();
+        Task<object> GetList(KursSearchDto dto);
+        Task<object> SearchAll(KursSearchDto dto);
     }
 }

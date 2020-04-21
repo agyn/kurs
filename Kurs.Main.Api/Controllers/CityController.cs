@@ -26,5 +26,20 @@ namespace Kurs.Main.Api.Controllers
                 return ExceptionResult(ex);
             }
         }
+
+        [HttpGet]
+        [Route("GetCities")]
+        public async Task<IActionResult> GetCities()
+        {
+            try
+            {
+                return Ok(await Logic.GetCities());
+            }
+            catch (Exception ex)
+            {
+                return ExceptionResult(ex);
+            }
+        }
+
     }
 }

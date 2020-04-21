@@ -12,12 +12,18 @@ namespace Kurs.Main.Data.Repos.ExchangerRepo
         public ExchangerRepo(KursContext context) : base(context)
         {
         }
-        
+
+        public async Task<object> GetExchangers(int currentUserId)
+        {
+            return await Repo.Where(x => x.UserId == currentUserId).ToListAsync();
+        }
+
         public async Task<object> GetList(ExchangerSearchDto dto)
         {
                         var query = GetQueryable(x => (x.Name.Contains(dto.Name) || string.IsNullOrEmpty(dto.Name)) 
                         && (x.Phone.Contains(dto.Phone) ||string.IsNullOrEmpty(dto.Phone) )
-                        && (x.Phone.Contains(dto.Address) ||string.IsNullOrEmpty(dto.Address) ) )
+                        && (x.Phone.Contains(dto.Address) ||string.IsNullOrEmpty(dto.Address) )
+                        && x.UserId == dto.UserId )
             .OrderByDescending(x => x.DateUpdate)
             .Skip(dto.Count * dto.Page).Take(dto.Count);
 
@@ -28,6 +34,7 @@ namespace Kurs.Main.Data.Repos.ExchangerRepo
                 x.Name,
                 x.Phone,
                 x.Address,
+                City = x.City.Name,
                 x.CityId,
                 x.UserId
             }).ToListAsync();

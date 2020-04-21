@@ -13,6 +13,11 @@ namespace Kurs.Main.Logic.ExchangerLogic
         {
         }
 
+        public async Task<object> GetExchangers(int currentUserId)
+        {
+            return await Repo.GetExchangers(currentUserId);
+        }
+
         public async Task<object> GetList(ExchangerSearchDto dto)
         {
             return await Repo.GetList(dto);

@@ -26,6 +26,7 @@ namespace Kurs.Identity.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
+            var aa = CurrentUserId;
             if (!ModelState.IsValid) return BadRequest(ModelState);
             try
             {
